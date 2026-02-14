@@ -1,0 +1,13 @@
+{
+  "Group": "pl.majami",
+  "Name": "DayCounter",
+  "Version": "1.0.0",
+  "Authors": [
+    {
+      "Name": "Majami",
+      "Email": "",
+      "Url": ""
+    }
+  ],
+  "Main": "pl.majami.daycounter.DayCounter"
+}
