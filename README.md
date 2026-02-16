@@ -1,4 +1,5 @@
 # DayCounter
+[![CurseForge](https://img.shields.io/badge/CurseForge-DayCounter-orange?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/daycounter)
 
 A simple Hytale server plugin that shows a day counter every in-game morning.
 
