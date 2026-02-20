@@ -59,7 +59,8 @@ final class DayCounterTickSystem extends TickingSystem<EntityStore> {
 
         String worldName = Objects.toString(world.getName(), "<unknown>");
 
-        WorldState state = this.stateByWorld.computeIfAbsent(worldName, name -> new WorldState());
+        DayCounterWorldStateResource persisted = store.getResource(DayCounterWorldStateResource.getResourceType());
+        WorldState state = this.stateByWorld.computeIfAbsent(worldName, name -> loadStateForWorld(persisted));
 
         if (!state.loggedInit) {
             state.loggedInit = true;
@@ -106,11 +107,16 @@ final class DayCounterTickSystem extends TickingSystem<EntityStore> {
         );
 
         DayCounterConfig config = this.configSupplier.get();
+        long previousAnnouncedDay = state.lastAnnouncedDay;
+        int previousSubtitleIndex = state.nextSubtitleIndex;
         String subtitleText = resolveSubtitle(config, state);
 
         announceToWorld(world, time.getGameDateTime(), subtitleText);
 
         state.lastAnnouncedDay = dayNumber;
+        if (previousAnnouncedDay != state.lastAnnouncedDay || previousSubtitleIndex != state.nextSubtitleIndex) {
+            saveStateToResource(persisted, state);
+        }
     }
 
     /**
@@ -129,8 +135,12 @@ final class DayCounterTickSystem extends TickingSystem<EntityStore> {
      * @param world world to announce in
      * @param localDateTime date-time to format
      */
-    void announceNow(@Nonnull World world, @Nonnull LocalDateTime localDateTime) {
-        String subtitleText = resolveSubtitleForWorld(world);
+    void announceNow(
+            @Nonnull Store<EntityStore> store,
+            @Nonnull World world,
+            @Nonnull LocalDateTime localDateTime
+    ) {
+        String subtitleText = resolveSubtitleForWorld(store, world);
         announceToWorld(world, localDateTime, subtitleText);
     }
 
@@ -140,11 +150,30 @@ final class DayCounterTickSystem extends TickingSystem<EntityStore> {
      * @param world world to resolve for
      * @return subtitle text
      */
-    String resolveSubtitleForWorld(@Nonnull World world) {
+    String resolveSubtitleForWorld(@Nonnull Store<EntityStore> store, @Nonnull World world) {
         String worldName = Objects.toString(world.getName(), "<unknown>");
-        WorldState state = this.stateByWorld.computeIfAbsent(worldName, name -> new WorldState());
+        DayCounterWorldStateResource persisted = store.getResource(DayCounterWorldStateResource.getResourceType());
+        WorldState state = this.stateByWorld.computeIfAbsent(worldName, name -> loadStateForWorld(persisted));
         DayCounterConfig config = this.configSupplier.get();
-        return resolveSubtitle(config, state);
+        int previousSubtitleIndex = state.nextSubtitleIndex;
+        String subtitle = resolveSubtitle(config, state);
+        if (previousSubtitleIndex != state.nextSubtitleIndex) {
+            saveStateToResource(persisted, state);
+        }
+        return subtitle;
+    }
+
+    @Nonnull
+    private static WorldState loadStateForWorld(@Nonnull DayCounterWorldStateResource persisted) {
+        return new WorldState(persisted.lastAnnouncedDay, persisted.nextSubtitleIndex);
+    }
+
+    private static void saveStateToResource(
+            @Nonnull DayCounterWorldStateResource persisted,
+            @Nonnull WorldState state
+    ) {
+        persisted.lastAnnouncedDay = state.lastAnnouncedDay;
+        persisted.nextSubtitleIndex = Math.max(0, state.nextSubtitleIndex);
     }
 
     /**

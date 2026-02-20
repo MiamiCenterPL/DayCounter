@@ -81,7 +81,7 @@ final class DayCounterCommand extends AbstractPlayerCommand {
         String titleText = DayCounterTickSystem.formatTitle(dateTime);
 
         if ("test".equals(subcommand)) {
-            this.tickSystem.announceNow(world, dateTime);
+            this.tickSystem.announceNow(store, world, dateTime);
             return;
         }
 
@@ -95,7 +95,7 @@ final class DayCounterCommand extends AbstractPlayerCommand {
             return;
         }
 
-        String subtitleText = this.tickSystem.resolveSubtitleForWorld(world);
+        String subtitleText = this.tickSystem.resolveSubtitleForWorld(store, world);
         EventTitleUtil.showEventTitleToPlayer(
                 playerRef,
                 Message.raw(titleText),

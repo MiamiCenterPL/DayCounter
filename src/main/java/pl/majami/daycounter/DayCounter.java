@@ -57,6 +57,8 @@ public class DayCounter extends JavaPlugin {
         ensureConfigDirectory();
         loadConfig();
 
+        DayCounterWorldStateResource.getResourceType();
+
         LOGGER.atInfo().log("DayCounter enabled (config=%s)", this.configFile.toAbsolutePath().toString());
 
         this.getCommandRegistry().registerCommand(

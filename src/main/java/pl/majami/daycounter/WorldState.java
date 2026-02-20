@@ -10,4 +10,12 @@ final class WorldState {
     long lastSeenDay;
     long lastAnnouncedDay = Long.MIN_VALUE;
     int nextSubtitleIndex;
+
+    WorldState() {
+    }
+
+    WorldState(long lastAnnouncedDay, int nextSubtitleIndex) {
+        this.lastAnnouncedDay = lastAnnouncedDay;
+        this.nextSubtitleIndex = Math.max(0, nextSubtitleIndex);
+    }
 }

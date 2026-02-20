@@ -4,10 +4,10 @@
   "Version": "1.0.0",
   "Authors": [
     {
-      "Name": "Majami",
-      "Email": "",
-      "Url": ""
+      "Name": "Majami"
     }
   ],
+  "Website": "https://www.curseforge.com/hytale/mods/daycounter",
+  "ServerVersion": "2026.02.19-1a311a592",
   "Main": "pl.majami.daycounter.DayCounter"
 }

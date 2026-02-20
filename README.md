@@ -7,6 +7,7 @@ A simple Hytale server plugin that shows a day counter every in-game morning.
 
 - Every morning (at the world sunrise time), shows a title message: `YEAR X DAY Y`
 - Optional subtitle support with random or queued selection
+- Queue/day state is persisted per world and survives server restarts
 - `/daycounter` command with `test` and `reload` subcommands
 
 ## Requirements
@@ -30,6 +31,8 @@ Copy the built JAR file to your Hytale server's mods directory (for the test ser
 
 The config is stored in the server config directory:
 - Test server: [run/config/daycounter.json](run/config/daycounter.json)
+
+Persistent runtime queue/day state is stored in world save resources via Hytale's built-in ECS resource storage.
 
 Options:
 - `SubtitleStrategy`: `random` or `queue`
